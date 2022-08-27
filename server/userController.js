@@ -1,17 +1,13 @@
-// import bcrypt from 'bcryptjs';
-// import jwt from 'jsonwebtoken';
-// import User from './userModal';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
-const bcrypt = require('bcryptjs');
-const User = require('./userModal');
+import User from './userModal.js';
 
-// module.export const signin = async (req, res) => {
-const signin = async (req, res) => {
+export const signin = async (req, res) => {
   const { email, password } = req.body;
 
   try {
     const existingUser = await User.findOne({ email });
-    console.log('exiting user :: ', existingUser);
     if (!existingUser) return res.status(404).json({ message: "User doesn't exist." });
 
     const isPasswordCorrect = await bcrypt.compare(password, existingUser.password);
@@ -20,16 +16,17 @@ const signin = async (req, res) => {
 
     const token = jwt.sign({ email: existingUser.email, id: existingUser._id }, 'test', { expiresIn: '1h' });
 
-    res.status(200).json({ result: existingUser, token });
+    res.status(200).json({ data: { existingUser, token } });
   } catch (error) {
     res.status(500).json({ message: 'Something went wrong.' });
   }
 };
 
-const signup = async (req, res) => {
-  const { email, password, confirmPassword, firstName, lastName } = req.body;
+export const signup = async (req, res) => {
+  const { email, password, confirmPassword, name } = req.body;
 
   try {
+    if ((!email, !password, !name)) return res.status(400).json({ message: 'invalid credentials.' });
     const existingUser = await User.findOne({ email });
 
     if (existingUser) return res.status(400).json({ message: 'User already exists.' });
@@ -38,14 +35,12 @@ const signup = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    const result = await User.create({ email, password: hashedPassword, name: `${firstName} ${lastName}` });
+    const result = await User.create({ email, password: hashedPassword, name: name });
 
     const token = jwt.sign({ email: result.email, id: result._id }, 'test', { expiresIn: '1h' });
 
-    res.status(200).json({ result, token });
+    res.status(200).json({ data: { result, token } });
   } catch (error) {
     res.status(500).json({ message: 'Something went wrong.' });
   }
 };
-
-module.export = { signin, signup };

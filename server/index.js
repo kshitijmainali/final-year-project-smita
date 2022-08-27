@@ -1,10 +1,10 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
-const cors = require('cors');
+import express from 'express';
+import bodyParser from 'body-parser';
+import mongoose from 'mongoose';
+import cors from 'cors';
 // import dotenv from 'cors';
 
-const userRoutes = require('./userRoute');
+import userRoutes from './userRoute.js';
 
 const app = express();
 // dotenv.config();
@@ -15,7 +15,7 @@ app.use(cors());
 
 app.use('/user', userRoutes);
 
-const CONNECTION_URL = 'mongodb+srv://Kshitij:<myPassword>@cluster0.xctvxhj.mongodb.net/?retryWrites=true&w=majority';
+const CONNECTION_URL = 'mongodb+srv://Kshitij:myPassword@cluster0.xctvxhj.mongodb.net/?retryWrites=true&w=majority';
 const PORT = process.env.PORT || 5000;
 
 mongoose
@@ -24,7 +24,3 @@ mongoose
   .catch(error => console.log(`${error} did not connect`));
 
 mongoose.set('useFindAndModify', false);
-
-// app.listen(8091, ()=>{
-//     console.log(`Server running on port: ${8091}`)
-// })
