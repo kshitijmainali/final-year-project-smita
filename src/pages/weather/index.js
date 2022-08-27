@@ -7,11 +7,15 @@ import getFormattedWeatherData from '../../services/weatherService';
 import { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Button } from '@material-ui/core';
+import { logout } from '../../reduxSlices/auth';
+import { useDispatch } from 'react-redux';
 
 function Weather() {
   const [query, setQuery] = useState({ q: 'berlin' });
   const [units, setUnits] = useState('metric');
   const [weather, setWeather] = useState(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchWeather = async () => {
@@ -37,10 +41,21 @@ function Weather() {
     return 'from-yellow-700 to-orange-700';
   };
 
+  const handleLogOut = () => {
+    dispatch(logout());
+  };
+
   return (
     <div
       className={`mx-auto max-w-screen-md mt-4 py-5 px-32 bg-gradient-to-br  h-fit shadow-xl shadow-gray-400 ${formatBackground()}`}
     >
+      <Button
+        onClick={() => {
+          handleLogOut();
+        }}
+      >
+        Logout
+      </Button>
       <TopButtons setQuery={setQuery} />
       <Inputs setQuery={setQuery} units={units} setUnits={setUnits} />
 
